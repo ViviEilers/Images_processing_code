@@ -12,7 +12,7 @@ setwd( "C:/Users/Vivianne Eilers/Dropbox/Videos_Scotland")
 folders<-unique(dirname(list.files(rec=T)))
 
 # coordinates to crop the images according to camera name
-Cam_coordinates<-read.csv("C:/Users/Vivianne Eilers/Dropbox/Cam_crop.csv")
+Cam_coordinates<-read.csv("../Cam_crop.csv")
 
 # create a data frame to store the output of images selected
 selection.folders<-data.frame()
