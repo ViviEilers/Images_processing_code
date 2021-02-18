@@ -12,7 +12,7 @@ setwd( "C:/Users/Vivianne Eilers/Dropbox/Videos_Scotland")
 folders<-unique(dirname(list.files(rec=T)))
 
 # coordinates to crop the images according to camera name
-Cam_coordinates<-read.csv("C:/Users/Vivianne Eilers/Dropbox/Cam_coordinates_test.csv")
+Cam_coordinates<-read.csv("C:/Users/Vivianne Eilers/Dropbox/Cam_crop.csv")
 
 # create a data frame to store the output of images selected
 selection.folders<-data.frame()
@@ -34,6 +34,7 @@ for (z in 1:length(folders)){
     
     par(mfrow=c(2,2))
     test.raster<-stack(paste(folders[z], selection[i,"files"],sep="/")) # upload file
+    
     names(test.raster)<-c('r','g','b')
     
     plotRGB(test.raster) # plot original file
