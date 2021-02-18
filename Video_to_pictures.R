@@ -37,17 +37,19 @@ for (z in 1:length(folders_all)){
   path1<-path("C:","Users","Vivianne Eilers","Dropbox","Vivianne", "Doutorado", "Uni documents", "Fieldwork Scotland", "Videos", "Processed_videos", "Field_2", folders_all[z])
   folders_cam<-list.files(path1)
   
-  for (i in 1:length(folders_cam)){
-    cam_path<-path("C:","Users","Vivianne Eilers","Dropbox","Vivianne","Doutorado", "Uni documents", "Fieldwork Scotland", "Videos", "Processed_videos", "Field_2", folders_all[z], folders_cam[i])
-    videos<-list.files(cam_path, pattern = "\\.avi$")  
-    
-    for (j in 1:length(videos)){
-      outdir<-path("C:","Users","Vivianne Eilers","Dropbox","Vivianne", "Doutorado", "Uni documents", "Fieldwork Scotland", "Videos", "Processed_videos", "Field_2", "Images",folders_all[z],folders_cam[i],videos[j])
-      indir<-path("C:","Users","Vivianne Eilers","Dropbox","Vivianne", "Doutorado", "Uni documents", "Fieldwork Scotland", "Videos", "Processed_videos", "Field_2",folders_all[z],folders_cam[i], videos[j])
-      av_video_images(indir,destdir = outdir,format = "png", fps=5)   
+  # if(length(folders_cam) > 0){
+    for (i in 1:length(folders_cam)){
+      cam_path<-path("C:","Users","Vivianne Eilers","Dropbox","Vivianne","Doutorado", "Uni documents", "Fieldwork Scotland", "Videos", "Processed_videos", "Field_2", folders_all[z], folders_cam[i])
+      videos<-list.files(cam_path, pattern = "\\.avi$")  
       
+      for (j in 1:length(videos)){
+        outdir<-path("C:","Users","Vivianne Eilers","Dropbox","Vivianne", "Doutorado", "Uni documents", "Fieldwork Scotland", "Videos", "Processed_videos", "Field_2", "Images",folders_all[z],folders_cam[i],videos[j])
+        indir<-path("C:","Users","Vivianne Eilers","Dropbox","Vivianne", "Doutorado", "Uni documents", "Fieldwork Scotland", "Videos", "Processed_videos", "Field_2",folders_all[z],folders_cam[i], videos[j])
+        av_video_images(indir,destdir = outdir,format = "png", fps=5)   
+        
+      }
     }
-  }
+  # }
 }    
 
 # The folder "Bresil_2_CAM4/2020-12-01" is empty, so the code stops
