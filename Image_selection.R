@@ -74,8 +74,10 @@ for (z in 1:length(folders)){
     print(indicator)
     
     
-    selection.folders<- rbind(selection.folders, selection) 
+    
   }
+  
+  selection.folders<- rbind(selection.folders, selection) 
   
 }
 
