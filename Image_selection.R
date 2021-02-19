@@ -28,6 +28,8 @@ for (z in 1:length(folders)){
   selection<-as.data.frame(files) 
   selection$keep<-NA
   selection$folder<-folders[z] 
+  selection$position.x<-NA
+  selection$position.y<-NA
 
   # loop going through all files listed in the dataframe  
   for (i in 1:dim(selection)[1]){ 
@@ -69,18 +71,31 @@ for (z in 1:length(folders)){
       selection[i,"keep"]<-"yes" else 
       selection[i,"keep"]<-"no" 
     
+    if(selection[i,"keep"]=="yes"){
+      
+      par(mfrow=c(1,1))
+      
+      yellowdf<-as.data.frame(stack(test.yellow$Yellow_spots),xy=T)
+      
+      yellow.position<-yellowdf[yellowdf$Yellow_spots==1,]
+      
+      bird.position<-apply(yellow.position,2, mean)
+      
+      plot(yellow.position$x,yellow.position$y)
+      points(bird.position["x"],bird.position["y"], col="red", pch=4, cex=3)
+      
+      selection[i,]$position.x<-bird.position["x"]
+      selection[i,]$position.y<-bird.position["y"]
+    }
+    
     indicator<-selection[i, c("folder","files","keep")]
     colnames(indicator)<-NULL
     print(indicator)
-    
-    
-    
-  }
+    }
   
   selection.folders<- rbind(selection.folders, selection) 
-  
-}
+  }
 
 selection.folders # check which images were selected
 
-write.csv(selection.folders [, c("folder","files","keep")], "C:/Users/Vivianne Eilers/Dropbox/Videos_Scotland/selection_results.csv")
+write.csv(selection.folders [, c("folder","files","keep", "position.x", "position.y")], "C:/Users/Vivianne Eilers/Dropbox/Videos_Scotland/selection_results.csv")
