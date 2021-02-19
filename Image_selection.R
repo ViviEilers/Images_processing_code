@@ -2,9 +2,9 @@
 
 # 2 - Selecting images with yellow circle in the area of the cables ####
 
-install.packages('raster')
 library(raster)
 library(rgdal)
+library(ggplot2)
 
 setwd( "C:/Users/Vivianne Eilers/Dropbox/Videos_Scotland")
 
@@ -20,6 +20,9 @@ selection.folders<-data.frame()
 # create a buffer to use around rgb ranges
 buff<-10 
 
+# number of pixels bewteen two birds
+cluster.dist<-100 
+
 
 # create dataframe with file names and keep "yes" or "no"
 for (z in 1:length(folders)){
@@ -30,6 +33,8 @@ for (z in 1:length(folders)){
   selection$folder<-folders[z] 
   selection$position.x<-NA
   selection$position.y<-NA
+  selection$birdNo<-NA
+  selection.i<-data.frame()
 
   # loop going through all files listed in the dataframe  
   for (i in 1:dim(selection)[1]){ 
@@ -79,23 +84,46 @@ for (z in 1:length(folders)){
       
       yellow.position<-yellowdf[yellowdf$Yellow_spots==1,]
       
-      bird.position<-apply(yellow.position,2, mean)
+      d<-dist(yellow.position[,c("x","y")])
+      
+      hc<-hclust(d)
+      
+      yellow.position$cluster<-cutree(hc, h=cluster.dist)
+      
+      ggplot(yellow.position, aes(x,y, color=factor(cluster)))+
+        geom_point()+ theme_classic()
+      
+      bird.position.x<-tapply(yellow.position$x,yellow.position$cluster, mean)
+      bird.position.y<-tapply(yellow.position$y,yellow.position$cluster, mean)
+      
+      bird.position<-cbind(bird.position.x,bird.position.y)
+      colnames(bird.position)<-c("x","y")
       
       plot(yellow.position$x,yellow.position$y)
       points(bird.position["x"],bird.position["y"], col="red", pch=4, cex=3)
       
-      selection[i,]$position.x<-bird.position["x"]
-      selection[i,]$position.y<-bird.position["y"]
-    }
+      selection.temp<-data.frame()
+      
+      for (j in 1:dim(bird.position)[1]){
+        selection[i,]$position.x<-bird.position[j,"x"]
+        selection[i,]$position.y<-bird.position[j,"y"]
+        selection[i,]$birdNo<-paste(j,dim(bird.position)[1], sep="/")
+        selection.temp<-rbind(selection.temp,selection[i,])
+        
+      }
+      
+    } else selection.temp<-selection[i,]
+    
+    selection.i<-rbind(selection.i,selection.temp)
     
     indicator<-selection[i, c("folder","files","keep")]
     colnames(indicator)<-NULL
     print(indicator)
     }
   
-  selection.folders<- rbind(selection.folders, selection) 
+  selection.folders<- rbind(selection.folders, selection.i) 
   }
 
 selection.folders # check which images were selected
 
-write.csv(selection.folders [, c("folder","files","keep", "position.x", "position.y")], "C:/Users/Vivianne Eilers/Dropbox/Videos_Scotland/selection_results.csv")
+write.csv(selection.folders [, c("folder","files","keep", "position.x", "position.y", "birdNo")], "C:/Users/Vivianne Eilers/Dropbox/Videos_Scotland/selection_results.csv")
